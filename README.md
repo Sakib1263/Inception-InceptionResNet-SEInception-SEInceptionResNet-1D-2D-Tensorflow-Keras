@@ -22,3 +22,6 @@ Inception_ResNet_v1, as shown in the figure below, consists of modfied Inception
 The Stem of the Inception_ResNet_v2 is exactly same as that of Inception_v4, so it is not mentioned again in the figure below. Its Inception Modules are similar in structure that of Inception_ResNet_v1 but heavier. But in this case, Module-A gets repeated 10 times, Module-B 20 times and Module-C 10 times.  
 
 ![Inception_ResNet_v2 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_ResNet_v2.png "Inception_ResNet_v2  Architecture") Inception-ResNet-v2: Inception-A (Leftmost), Inception-B (Middle), Inception-C (Rightmost) [2]  
+
+[1] Review: Inception-v3 — 1st Runner Up (Image Classification) in ILSVRC 2015. Medium. (2021). Retrieved 22 August 2021, from https://sh-tsang.medium.com/review-inception-v3-1st-runner-up-image-classification-in-ilsvrc-2015-17915421f77c.  
+[2] Review: Inception-v4 — Evolved From GoogLeNet, Merged with ResNet Idea (Image Classification). Medium. (2021). Retrieved 22 August 2021, from https://towardsdatascience.com/review-inception-v4-evolved-from-googlenet-merged-with-resnet-idea-image-classification-5e8c339d18bc.  
