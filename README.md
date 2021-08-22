@@ -29,7 +29,7 @@ The Stem of the Inception_ResNet_v2 is exactly same as that of Inception_v4, so 
 ![Inception_ResNet_v2 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_ResNet_v2.png "Inception_ResNet_v2  Architecture") Inception-ResNet-v2: Inception-A (Leftmost), Inception-B (Middle), Inception-C (Rightmost) [2]  
 
 ## Supported Features
-The speciality about this model is its flexibility. The user has the option for: 
+Keping the future in mind, all the models have been developed in Keras with Tensorflow backend (tf.keras), so they do not support Theano as the backend. But, the speciality about the models is their flexibility. The user has the option for: 
 1. Choosing any of 4 available Inception models for either 1D or 2D tasks.
 2. Varying number of input kernel/filter, commonly known as the Width of the model. Default is 32, which is better to use following the paper.
 3. Varying number of classes for Classification tasks and number of extracted features for Regression tasks.
