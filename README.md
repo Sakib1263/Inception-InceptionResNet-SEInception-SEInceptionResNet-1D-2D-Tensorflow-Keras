@@ -15,7 +15,10 @@ The primary differences between Inception v3 and v4 are in the Stem structure an
 So, in Inception_v4, Inception Module-A is being used 4 times, Module-B 7 times and Module-C 3 times. As seen in the figure, the modified stem now has branch filter concatenation similar to the Inception Modules.  
 
 ## Inception-ResNet-v1  
-Inception_ResNet_v1, as shown in the figure below, consists of modfied Inception Modules. The main difference is the skip connection like ResNets. Its Stem is similar to Inception_v3  
+Inception_ResNet_v1, as shown in the figure below, consists of modfied Inception Modules. The main difference is the skip connections like that of ResNets. Its Stem is similar to Inception_v3. In case of Inception_ResNet_v1, Module-A gets repeated 5 times, Module-B 10 times and Module-C 5 times.  
 ![Inception_ResNet_v1 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_ResNet_v1.png "Inception_ResNet_v1  Architecture")  Inception-ResNet-v1: Whole Network Schema (Leftmost), Stem (2nd Left), Inception-A (Middle), Inception-B (2nd Right), Inception-C (Rightmost) [2]  
 
+## Inception-ResNet-v2  
+The Stem of the Inception_ResNet_v2 is exactly same as that of Inception_v4, so it is not mentioned again in the figure below. Its Inception Modules are similar in structure that of Inception_ResNet_v1 but heavier. But in this case, Module-A gets repeated 10 times, Module-B 20 times and Module-C 10 times.  
 
+![Inception_ResNet_v2 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_ResNet_v2.png "Inception_ResNet_v2  Architecture") Inception-ResNet-v2: Inception-A (Leftmost), Inception-B (Middle), Inception-C (Rightmost) [2]  
