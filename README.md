@@ -1,5 +1,10 @@
 # Inception-Model-Builder-Tensorflow-Keras
-Inception Models supported: Inception_v3, Inception_v4, Inception_ResNet_v1, Inception_ResNet_v2  
+Inception Models supported: 
+1. Inception_v3 []  
+2. Inception_v4 []  
+3. Inception_ResNet_v1 []  
+4. Inception_ResNet_v2 []  
+
 ## Inception-v3
 Inception_v3 is a more efficient version of Inception_v1 (or GoogLeNet) and Inception_v2 (BN-Inception), so they were not implemented.  
 Inception_v3 architecture is as follows:  
@@ -29,7 +34,7 @@ The speciality about this model is its flexibility. The user has the option for:
 2. Varying number of input kernel/filter, commonly known as the Width of the model. Default is 32, which is better to use following the paper.
 3. Varying number of classes for Classification tasks and number of extracted features for Regression tasks.
 4. Varying number of Channels in the Input Dataset.
-5. Auxilliary Outputs: Two optional Auxilliary Outputs are available for each Inception Model, each one is set before the Grid Size Reduction Blocks, respectively. If set 'TRUE', the output will contain 3 columns as predictions. Mentionable that this concept of having two auxilliary outputs, which act similar to 'Deep Supervision' for segmentation models such as UNet, has been adopted from Inception_v1 (GoogLeNet) architeture as provided below.  
+5. Auxilliary Outputs: Two optional Auxilliary Outputs are available for each Inception Model, each one is set before the Grid Size Reduction Blocks, respectively. If set 'TRUE', the output will contain 3 columns as predictions. Mentionable that this concept of having two auxilliary outputs, which act similar to 'Deep Supervision' for segmentation models such as UNet, has been adopted from Inception_v1 (GoogLeNet) architecture as provided below.  
 
 ![Inception_v1 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_v1.png "Inception_v1 Architecture") GoogLeNet Network (From Left to Right) [3]  
 
