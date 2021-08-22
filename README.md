@@ -1,9 +1,9 @@
 # Inception-Model-Builder-Tensorflow-Keras
 Inception Models supported: 
-1. Inception_v3 [Reference: https://arxiv.org/abs/1512.00567]  
-2. Inception_v4 [Reference: https://arxiv.org/abs/1602.07261]  
-3. Inception_ResNet_v1 [Reference: https://arxiv.org/abs/1602.07261]  
-4. Inception_ResNet_v2 [Reference: https://arxiv.org/abs/1602.07261]  
+1. **Inception_v3** [Reference: https://arxiv.org/abs/1512.00567]  
+2. **Inception_v4** [Reference: https://arxiv.org/abs/1602.07261]  
+3. **Inception_ResNet_v1** [Reference: https://arxiv.org/abs/1602.07261]  
+4. **Inception_ResNet_v2** [Reference: https://arxiv.org/abs/1602.07261]  
 
 ## Inception-v3
 Inception_v3 is a more efficient version of Inception_v1 (or GoogLeNet) and Inception_v2 (BN-Inception), so they were not implemented.  
