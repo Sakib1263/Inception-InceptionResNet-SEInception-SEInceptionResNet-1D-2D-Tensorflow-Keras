@@ -23,6 +23,17 @@ The Stem of the Inception_ResNet_v2 is exactly same as that of Inception_v4, so 
 
 ![Inception_ResNet_v2 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_ResNet_v2.png "Inception_ResNet_v2  Architecture") Inception-ResNet-v2: Inception-A (Leftmost), Inception-B (Middle), Inception-C (Rightmost) [2]  
 
+## Supported Features
+The speciality about this model is its flexibility. The user has the option for: 
+1. Choosing any of 4 available Inception models for either 1D or 2D tasks.
+2. Varying number of input kernel/filter, commonly known as the Width of the model. Default is 32, which is better to use following the paper.
+3. Varying number of classes for Classification tasks and number of extracted features for Regression tasks.
+4. Varying number of Channels in the Input Dataset.
+5. Auxilliary Outputs: Two optional Auxilliary Outputs are available for each Inception Model, each one is set before the Grid Size Reduction Blocks, respectively. If set 'TRUE', the output will contain 3 columns as predictions. Mentionable that this concept of having two auxilliary outputs, which act similar to 'Deep Supervision' for segmentation models such as UNet, has been adopted from Inception_v1 (GoogLeNet) architeture as provided below.  
 
+Details of the implementation process are available in the Jupyter Notebook containing the DEMO provided in the codes section. The datasets used in the DEMO are also available in the 'Documents' folder.  
+
+
+## References
 [1] Review: Inception-v3 — 1st Runner Up (Image Classification) in ILSVRC 2015. Medium. (2021). Retrieved 22 August 2021, from https://sh-tsang.medium.com/review-inception-v3-1st-runner-up-image-classification-in-ilsvrc-2015-17915421f77c.  
 [2] Review: Inception-v4 — Evolved From GoogLeNet, Merged with ResNet Idea (Image Classification). Medium. (2021). Retrieved 22 August 2021, from https://towardsdatascience.com/review-inception-v4-evolved-from-googlenet-merged-with-resnet-idea-image-classification-5e8c339d18bc.  
