@@ -38,7 +38,7 @@ Keping the future in mind, all the models have been developed in Keras with Tens
 
 ![Inception_v1 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_v1.png "Inception_v1 Architecture") GoogLeNet Network (From Left to Right) [3]  
 
-Details of the implementation process are available in the Jupyter Notebook containing the DEMO provided in the codes section. The datasets used in the DEMO are also available in the 'Documents' folder.  
+Details of the 1D implementation process are available in the Jupyter Notebook containing the DEMO provided in the codes section. The datasets used in the DEMO are also available in the 'Documents' folder. The DEMO for 2D version will be added later along with supports for ImageNet or CIFAR-10 weights to be added in the top as an option.  
 
 
 ## References
