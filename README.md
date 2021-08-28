@@ -51,10 +51,10 @@ Details of the 1D implementation process are available in the Jupyter Notebook c
 
 
 ## References
-[1] Szegedy, C., Liu, W., Jia, Y., Sermanet, P., Reed, S., & Anguelov, D. et al. (2021). Going Deeper with Convolutions. arXiv.org. Retrieved 28 August 2021, from https://arxiv.org/abs/1409.4842.  
-[2] Szegedy, C., Vanhoucke, V., Ioffe, S., Shlens, J., & Wojna, Z. (2021). Rethinking the Inception Architecture for Computer Vision. arXiv.org. Retrieved 28 August 2021, from http://arxiv.org/abs/1512.00567.  
-[3] Szegedy, C., Ioffe, S., Vanhoucke, V., & Alemi, A. (2021). Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning. arXiv.org. Retrieved 28 August 2021, from https://arxiv.org/abs/1602.07261.  
-[4] Ioffe, S., & Szegedy, C. (2021). Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift. arXiv.org. Retrieved 28 August 2021, from https://arxiv.org/abs/1502.03167.  
-[5] Review: Inception-v3 — 1st Runner Up (Image Classification) in ILSVRC 2015. Medium. (2021). Retrieved 22 August 2021, from https://sh-tsang.medium.com/review-inception-v3-1st-runner-up-image-classification-in-ilsvrc-2015-17915421f77c.  
-[6] Review: Inception-v4 — Evolved From GoogLeNet, Merged with ResNet Idea (Image Classification). Medium. (2021). Retrieved 22 August 2021, from https://towardsdatascience.com/review-inception-v4-evolved-from-googlenet-merged-with-resnet-idea-image-classification-5e8c339d18bc.  
-[7] Review: GoogLeNet (Inception v1)— Winner of ILSVRC 2014 (Image Classification). Medium. (2021). Retrieved 22 August 2021, from https://medium.com/coinmonks/paper-review-of-googlenet-inception-v1-winner-of-ilsvlc-2014-image-classification-c2b3565a64e7.  
+**[1]** Szegedy, C., Liu, W., Jia, Y., Sermanet, P., Reed, S., & Anguelov, D. et al. (2021). Going Deeper with Convolutions. arXiv.org. Retrieved 28 August 2021, from https://arxiv.org/abs/1409.4842.  
+**[2]** Szegedy, C., Vanhoucke, V., Ioffe, S., Shlens, J., & Wojna, Z. (2021). Rethinking the Inception Architecture for Computer Vision. arXiv.org. Retrieved 28 August 2021, from http://arxiv.org/abs/1512.00567.  
+**[3]** Szegedy, C., Ioffe, S., Vanhoucke, V., & Alemi, A. (2021). Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning. arXiv.org. Retrieved 28 August 2021, from https://arxiv.org/abs/1602.07261.  
+**[4]** Ioffe, S., & Szegedy, C. (2021). Batch Normalization: Accelerating Deep Network Training by Reducing Internal Covariate Shift. arXiv.org. Retrieved 28 August 2021, from https://arxiv.org/abs/1502.03167.  
+**[5]** Review: Inception-v3 — 1st Runner Up (Image Classification) in ILSVRC 2015. Medium. (2021). Retrieved 22 August 2021, from https://sh-tsang.medium.com/review-inception-v3-1st-runner-up-image-classification-in-ilsvrc-2015-17915421f77c.  
+**[6]** Review: Inception-v4 — Evolved From GoogLeNet, Merged with ResNet Idea (Image Classification). Medium. (2021). Retrieved 22 August 2021, from https://towardsdatascience.com/review-inception-v4-evolved-from-googlenet-merged-with-resnet-idea-image-classification-5e8c339d18bc.  
+**[7]** Review: GoogLeNet (Inception v1)— Winner of ILSVRC 2014 (Image Classification). Medium. (2021). Retrieved 22 August 2021, from https://medium.com/coinmonks/paper-review-of-googlenet-inception-v1-winner-of-ilsvlc-2014-image-classification-c2b3565a64e7.  
