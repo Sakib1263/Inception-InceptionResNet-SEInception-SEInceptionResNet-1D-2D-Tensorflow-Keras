@@ -7,7 +7,11 @@ Inception Models supported:
 5. **Inception_ResNet_v1** [Reference: https://arxiv.org/abs/1602.07261]  
 6. **Inception_ResNet_v2** [Reference: https://arxiv.org/abs/1602.07261]  
 
-## Inception-v3
+## Inception-v1 (GoogLeNet)  
+
+
+
+## Inception-v2, v3
 Inception_v3 is a more efficient version of Inception_v1 (or GoogLeNet) and Inception_v2 (BN-Inception), so they were not implemented.  
 Inception_v3 architecture is as follows:  
 ![Inception_v3 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_v3.png "Inception_v3 Architecture")  
