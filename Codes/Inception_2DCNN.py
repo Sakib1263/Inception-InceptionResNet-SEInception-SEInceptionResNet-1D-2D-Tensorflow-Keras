@@ -1,7 +1,9 @@
-"""Inception models developed in Tensorflow-Keras.
-Reference - [Rethinking the Inception Architecture for Computer Vision](http://arxiv.org/abs/1512.00567)
-Inception_v3 Review: https://sh-tsang.medium.com/review-inception-v3-1st-runner-up-image-classification-in-ilsvrc-2015-17915421f77c
-Inception_v4 Review: https://towardsdatascience.com/review-inception-v4-evolved-from-googlenet-merged-with-resnet-idea-image-classification-5e8c339d18bc
+"""Inception 2D_CNN Models in Tensorflow-Keras.
+References -
+Inception_v1 (GoogLeNet): https://arxiv.org/abs/1409.4842 [Going Deeper with Convolutions]
+Inception_v2: http://arxiv.org/abs/1512.00567 [Rethinking the Inception Architecture for Computer Vision]
+Inception_v3: http://arxiv.org/abs/1512.00567 [Rethinking the Inception Architecture for Computer Vision]
+Inception_v4: https://arxiv.org/abs/1602.07261 [Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning]
 """
 
 
@@ -9,7 +11,7 @@ import tensorflow as tf
 
 
 def Conv_2D_Block(x, model_width, kernel, strides=(1, 1), padding="same"):
-    # 1D Convolutional Block with BatchNormalization
+    # 2D Convolutional Block with BatchNormalization
     x = tf.keras.layers.Conv2D(model_width, kernel, strides=strides, padding=padding, kernel_initializer="he_normal")(x)
     x = tf.keras.layers.BatchNormalization()(x)
     x = tf.keras.layers.Activation('relu')(x)
@@ -71,6 +73,325 @@ class Inception:
             outputs = tf.keras.layers.Dense(self.output_nums, activation='softmax')(x)
 
         return outputs
+
+    def Inception_v1(self):
+        inputs = tf.keras.Input((self.length, self.num_channel))  # The input tensor
+        # Stem
+        x = Conv_2D_Block(inputs, self.num_filters, 7, strides=(2, 2))
+        x = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+        x = Conv_2D_Block(x, self.num_filters, 1, padding='valid')
+        x = Conv_2D_Block(x, self.num_filters * 3, 3)
+        x = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+
+        # Inception Block 1
+        branch1x1 = Conv_2D_Block(x, 64, 1, padding='valid')
+
+        branch3x3 = Conv_2D_Block(x, 96, 1, padding='valid')
+        branch3x3 = Conv_2D_Block(branch3x3, 128, 3)
+
+        branch5x5 = Conv_2D_Block(x, 16, 1, padding='valid')
+        branch5x5 = Conv_2D_Block(branch5x5, 32, 5)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 32, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch5x5, branch_pool], axis=-1, name='Inception_1')
+
+        # Inception Block 2
+        branch1x1 = Conv_2D_Block(x, 128, 1, padding='valid')
+
+        branch3x3 = Conv_2D_Block(x, 128, 1, padding='valid')
+        branch3x3 = Conv_2D_Block(branch3x3, 192, 3)
+
+        branch5x5 = Conv_2D_Block(x, 32, 1, padding='valid')
+        branch5x5 = Conv_2D_Block(branch5x5, 96, 5)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 64, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch5x5, branch_pool], axis=-1, name='Inception_2')
+
+        x = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+
+        # Inception Block 3
+        branch1x1 = Conv_2D_Block(x, 192, 1, padding='valid')
+
+        branch3x3 = Conv_2D_Block(x, 96, 1, padding='valid')
+        branch3x3 = Conv_2D_Block(branch3x3, 208, 3)
+
+        branch5x5 = Conv_2D_Block(x, 16, 1, padding='valid')
+        branch5x5 = Conv_2D_Block(branch5x5, 48, 5)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 64, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch5x5, branch_pool], axis=-1, name='Inception_3')
+
+        aux_output_0 = []
+        if self.auxilliary_outputs:
+            # Auxilliary Output 0
+            aux_pool = tf.keras.layers.AveragePooling2D(pool_size=(5, 5), strides=(3, 3), padding='valid')(x)
+            aux_conv = Conv_2D_Block(aux_pool, 64, 1)
+            aux_output_0 = self.MLP(aux_conv)
+
+        # Inception Block 4
+        branch1x1 = Conv_2D_Block(x, 160, 1, padding='valid')
+
+        branch3x3 = Conv_2D_Block(x, 112, 1, padding='valid')
+        branch3x3 = Conv_2D_Block(branch3x3, 224, 3)
+
+        branch5x5 = Conv_2D_Block(x, 24, 1, padding='valid')
+        branch5x5 = Conv_2D_Block(branch5x5, 64, 5)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 64, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch5x5, branch_pool], axis=-1, name='Inception_4')
+
+        # Inception Block 5
+        branch1x1 = Conv_2D_Block(x, 128, 1, padding='valid')
+
+        branch3x3 = Conv_2D_Block(x, 128, 1, padding='valid')
+        branch3x3 = Conv_2D_Block(branch3x3, 256, 3)
+
+        branch5x5 = Conv_2D_Block(x, 24, 1, padding='valid')
+        branch5x5 = Conv_2D_Block(branch5x5, 64, 5)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 64, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch5x5, branch_pool], axis=-1, name='Inception_5')
+
+        # Inception Block 6
+        branch1x1 = Conv_2D_Block(x, 112, 1, padding='valid')
+
+        branch3x3 = Conv_2D_Block(x, 144, 1, padding='valid')
+        branch3x3 = Conv_2D_Block(branch3x3, 288, 3)
+
+        branch5x5 = Conv_2D_Block(x, 32, 1, padding='valid')
+        branch5x5 = Conv_2D_Block(branch5x5, 64, 5)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 64, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch5x5, branch_pool], axis=-1, name='Inception_6')
+
+        aux_output_1 = []
+        if self.auxilliary_outputs:
+            # Auxilliary Output 1
+            aux_pool = tf.keras.layers.AveragePooling2D(pool_size=(5, 5), strides=(3, 3), padding='valid')(x)
+            aux_conv = Conv_2D_Block(aux_pool, 64, 1)
+            aux_output_1 = self.MLP(aux_conv)
+
+        # Inception Block 7
+        branch1x1 = Conv_2D_Block(x, 256, 1, padding='valid')
+
+        branch3x3 = Conv_2D_Block(x, 160, 1, padding='valid')
+        branch3x3 = Conv_2D_Block(branch3x3, 320, 3)
+
+        branch5x5 = Conv_2D_Block(x, 32, 1, padding='valid')
+        branch5x5 = Conv_2D_Block(branch5x5, 128, 5)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 128, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch5x5, branch_pool], axis=-1, name='Inception_7')
+
+        x = tf.keras.layers.MaxPooling2(3, strides=(2, 2))(x)
+
+        # Inception Block 8
+        branch1x1 = Conv_2D_Block(x, 256, 1, padding='valid')
+
+        branch3x3 = Conv_2D_Block(x, 160, 1, padding='valid')
+        branch3x3 = Conv_2D_Block(branch3x3, 320, 3)
+
+        branch5x5 = Conv_2D_Block(x, 32, 1, padding='valid')
+        branch5x5 = Conv_2D_Block(branch5x5, 128, 5)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 128, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch5x5, branch_pool], axis=-1, name='Inception_8')
+
+        # Inception Block 9
+        branch1x1 = Conv_2D_Block(x, 384, 1, padding='valid')
+
+        branch3x3 = Conv_2D_Block(x, 192, 1, padding='valid')
+        branch3x3 = Conv_2D_Block(branch3x3, 384, 3)
+
+        branch5x5 = Conv_2D_Block(x, 48, 1, padding='valid')
+        branch5x5 = Conv_2D_Block(branch5x5, 128, 5)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 128, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch5x5, branch_pool], axis=-1, name='Inception_9')
+
+        # Final Dense MLP Layer for the outputs
+        final_output = self.MLP(x)
+        # Create model.
+        model = tf.keras.Model(inputs, final_output, name='Inception_v3')
+        if self.auxilliary_outputs:
+            model = tf.keras.Model(inputs, outputs=[final_output, aux_output_0, aux_output_1], name='Inception_v1')
+
+        return model
+
+    def Inception_v2(self):
+        inputs = tf.keras.Input((self.length, self.num_channel))  # The input tensor
+        # Stem: 56 x 56 x 64
+        x = tf.keras.layers.SeparableConv2D(self.num_filters, kernel_size=7, strides=(2, 2), depth_multiplier=1, padding='same')(inputs)
+        x = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+        x = Conv_2D_Block(x, self.num_filters * 2, 1, padding='valid')
+        x = Conv_2D_Block(x, self.num_filters * 6, 3, padding='valid')
+        x = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
+
+        # Inception Block 1: 28 x 28 x 192
+        branch1x1 = Conv_2D_Block(x, 64, 1)
+
+        branch3x3 = Conv_2D_Block(x, 64, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 64, 3)
+
+        branch3x3dbl = Conv_2D_Block(x, 64, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 96, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 96, 3)
+
+        branch_pool = tf.keras.layers.AveragePooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 32, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Inception_1')
+
+        # Inception Block 2: 28 x 28 x 256
+        branch1x1 = Conv_2D_Block(x, 64, 1)
+
+        branch3x3 = Conv_2D_Block(x, 64, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 96, 3)
+
+        branch3x3dbl = Conv_2D_Block(x, 64, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 96, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 96, 3)
+
+        branch_pool = tf.keras.layers.AveragePooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 64, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Inception_2')
+
+        aux_output_0 = []
+        if self.auxilliary_outputs:
+            # Auxilliary Output 0
+            aux_pool = tf.keras.layers.AveragePooling2D(pool_size=(5, 5), strides=(3, 3), padding='valid')(x)
+            aux_conv = Conv_2D_Block(aux_pool, 64, 1)
+            aux_output_0 = self.MLP(aux_conv)
+
+        # Reduction Block A: 28 x 28 x 320
+        branch3x3 = Conv_2D_Block(x, 128, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 160, 3, strides=(2, 2))
+
+        branch3x3dbl = Conv_2D_Block(x, 64, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 96, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 96, 3, strides=(2, 2))
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = tf.keras.layers.concatenate([branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Reduction_A')
+
+        # Inception Block 3: 14 x 14 x 576
+        branch1x1 = Conv_2D_Block(x, 224, 1)
+
+        branch3x3 = Conv_2D_Block(x, 64, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 96, 3)
+
+        branch3x3dbl = Conv_2D_Block(x, 96, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 128, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 128, 3)
+
+        branch_pool = tf.keras.layers.AveragePooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 128, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Inception_3')
+
+        # Inception Block 4: 14 x 14 x 576
+        branch1x1 = Conv_2D_Block(x, 192, 1)
+
+        branch3x3 = Conv_2D_Block(x, 96, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 128, 3)
+
+        branch3x3dbl = Conv_2D_Block(x, 96, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 128, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 128, 3)
+
+        branch_pool = tf.keras.layers.AveragePooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 128, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Inception_4')
+
+        # Inception Block 5: 14 x 14 x 576
+        branch1x1 = Conv_2D_Block(x, 160, 1)
+
+        branch3x3 = Conv_2D_Block(x, 128, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 160, 3)
+
+        branch3x3dbl = Conv_2D_Block(x, 128, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 160, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 160, 3)
+
+        branch_pool = tf.keras.layers.AveragePooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 96, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Inception_5')
+
+        # Inception Block 6: 14 x 14 x 576
+        branch1x1 = Conv_2D_Block(x, 96, 1)
+
+        branch3x3 = Conv_2D_Block(x, 128, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 192, 3)
+
+        branch3x3dbl = Conv_2D_Block(x, 160, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 192, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 192, 3)
+
+        branch_pool = tf.keras.layers.AveragePooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 96, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Inception_6')
+
+        aux_output_1 = []
+        if self.auxilliary_outputs:
+            # Auxilliary Output 1
+            aux_pool = tf.keras.layers.AveragePooling2D(pool_size=(5, 5), strides=(3, 3), padding='valid')(x)
+            aux_conv = Conv_2D_Block(aux_pool, 192, 1)
+            aux_output_1 = self.MLP(aux_conv)
+
+        # Reduction Block B: 14 x 14 x 576
+        branch3x3 = Conv_2D_Block(x, 128, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 192, 3, strides=(2, 2))
+
+        branch3x3dbl = Conv_2D_Block(x, 192, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 256, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 256, 3, strides=(2, 2))
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2), padding='same')(x)
+        x = tf.keras.layers.concatenate([branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Reduction_B')
+
+        # Inception Block 7: 7 x 7 x 1024
+        branch1x1 = Conv_2D_Block(x, 352, 1)
+
+        branch3x3 = Conv_2D_Block(x, 192, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 320, 3)
+
+        branch3x3dbl = Conv_2D_Block(x, 160, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 224, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 224, 3)
+
+        branch_pool = tf.keras.layers.AveragePooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 128, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Inception_7')
+
+        # Inception Block 8: 7 x 7 x 1024
+        branch1x1 = Conv_2D_Block(x, 352, 1)
+
+        branch3x3 = Conv_2D_Block(x, 192, 1)
+        branch3x3 = Conv_2D_Block(branch3x3, 320, 3)
+
+        branch3x3dbl = Conv_2D_Block(x, 192, 1)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 224, 3)
+        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 224, 3)
+
+        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(1, 1), padding='same')(x)
+        branch_pool = Conv_2D_Block(branch_pool, 128, 1)
+        x = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl, branch_pool], axis=-1, name='Inception_8')
+
+        # Final Dense MLP Layer for the outputs
+        final_output = self.MLP(x)
+        # Create model.
+        model = tf.keras.Model(inputs, final_output, name='Inception_v3')
+        if self.auxilliary_outputs:
+            model = tf.keras.Model(inputs, outputs=[final_output, aux_output_0, aux_output_1], name='Inception_v2')
+
+        return model
 
     def Inception_v3(self):
         inputs = tf.keras.Input((self.length, self.num_channel))  # The input tensor
