@@ -643,3 +643,5 @@ class Inception:
             model = tf.keras.layers.Model(inputs, outputs=[final_output, aux_output_0, aux_output_1], name='Inception_v4')
 
         return model
+
+    
