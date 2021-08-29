@@ -159,7 +159,7 @@ def Reduction_Block_B(inputs, filterB1_1, filterB1_2, filterB2_1, filterB2_2, fi
 
 
 class Inception:
-    def __init__(self, length, num_channel, num_filters, problem_type='Regression',
+    def __init__(self, length, width, num_channel, num_filters, problem_type='Regression',
                  output_nums=1, pooling='avg', dropout_rate=False, auxilliary_outputs=False):
         # length: Input Signal Length
         # model_depth: Depth of the Model
@@ -172,6 +172,7 @@ class Inception:
         # dropout_rate: If turned on, some layers will be dropped out randomly based on the selected proportion
         # auxilliary_outputs: Two extra Auxullary outputs for the Inception models, acting like Deep Supervision
         self.length = length
+        self.width = width
         self.num_channel = num_channel
         self.num_filters = num_filters
         self.problem_type = problem_type
@@ -196,7 +197,7 @@ class Inception:
         return outputs
 
     def Inception_v1(self):
-        inputs = tf.keras.Input((self.length, self.num_channel))  # The input tensor
+        inputs = tf.keras.Input((self.length, self.width, self.num_channel))  # The input tensor
         # Stem
         x = Conv_2D_Block(inputs, self.num_filters, 7, strides=2)
         x = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
@@ -242,7 +243,7 @@ class Inception:
         return model
 
     def Inception_v2(self):
-        inputs = tf.keras.Input((self.length, self.num_channel))  # The input tensor
+        inputs = tf.keras.Input((self.length, self.width, self.num_channel))  # The input tensor
         # Stem: 56 x 64
         x = tf.keras.layers.SeparableConv2D(self.num_filters, kernel_size=7, strides=(2, 2), depth_multiplier=1, padding='same')(inputs)
         x = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
@@ -287,7 +288,7 @@ class Inception:
         return model
 
     def Inception_v3(self):
-        inputs = tf.keras.Input((self.length, self.num_channel))  # The input tensor
+        inputs = tf.keras.Input((self.length, self.width, self.num_channel))  # The input tensor
         # Stem
         x = Conv_2D_Block(inputs, self.num_filters, 3, strides=2, padding='valid')
         x = Conv_2D_Block(x, self.num_filters, 3, padding='valid')
@@ -341,7 +342,7 @@ class Inception:
         return model
 
     def Inception_v4(self):
-        inputs = tf.keras.Input((self.length, self.num_channel))  # The input tensor
+        inputs = tf.keras.Input((self.length, self.width, self.num_channel))  # The input tensor
         # Stem
         x = Conv_2D_Block(inputs, 32, 3, strides=2, padding='valid')
         x = Conv_2D_Block(x, 32, 3, padding='valid')
