@@ -1,4 +1,4 @@
-"""Inception_ResNet models in Keras.
+"""Inception_ResNet 2D models in Tensorflow-Keras.
 Reference - [Rethinking the Inception Architecture for Computer Vision](http://arxiv.org/abs/1512.00567)
 Inception_ResNet Review: https://towardsdatascience.com/review-inception-v4-evolved-from-googlenet-merged-with-resnet-idea-image-classification-5e8c339d18bc
 """
@@ -30,6 +30,102 @@ def regressor(inputs, feature_number):
     # feature_number : number of output features
     out = tf.keras.layers.Dense(feature_number, activation='linear')(inputs)
     return out
+
+
+def Inception_ResNet_Module_A(inputs, filterB1_1, filterB2_1, filterB2_2, filterB3_1, filterB3_2, filterB3_3, filterB4_1, i):
+    # Inception ResNet Module A - Block i
+    branch1x1 = Conv_2D_Block(inputs, filterB1_1, 1)
+
+    branch3x3 = Conv_2D_Block(inputs, filterB2_1, 1)
+    branch3x3 = Conv_2D_Block(branch3x3, filterB2_2, 3)
+
+    branch3x3dbl = Conv_2D_Block(inputs, filterB3_1, 1)
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_2, 3)
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_3, 3)
+
+    branch_concat = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl], axis=-1)
+    branch1x1_ln = tf.keras.layers.Conv2D(filterB4_1, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
+
+    x = tf.keras.layers.Add(name='Inception_ResNet_Block_A'+str(i))([inputs, branch1x1_ln])
+    x = tf.keras.layers.BatchNormalization()(x)
+    out = tf.keras.layers.Activation('relu')(x)
+
+    return out
+
+
+def Inception_ResNet_Module_B(inputs, filterB1_1, filterB2_1, filterB2_2, filterB2_3, filterB3_1, i):
+    # Inception ResNet Module B - Block i
+    branch1x1 = Conv_2D_Block(inputs, filterB1_1, 1)
+
+    branch7x7 = Conv_2D_Block(inputs, filterB2_1, 1)
+    branch7x7 = Conv_2D_Block(branch7x7, filterB2_2, (1, 7))
+    branch7x7 = Conv_2D_Block(branch7x7, filterB2_3, (7, 1))
+
+    branch_concat = tf.keras.layers.concatenate([branch1x1, branch7x7], axis=-1)
+    branch1x1_ln = tf.keras.layers.Conv2D(filterB3_1, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
+
+    x = tf.keras.layers.Add(name='Inception_ResNet_Block_B'+str(i))([inputs, branch1x1_ln])
+    x = tf.keras.layers.BatchNormalization()(x)
+    out = tf.keras.layers.Activation('relu')(x)
+
+    return out
+
+
+def Inception_ResNet_Module_C(inputs, filterB1_1, filterB2_1, filterB2_2, filterB2_3, filterB3_1, i):
+    # Inception ResNet Module C - Block i
+    branch1x1 = Conv_2D_Block(inputs, filterB1_1, 1)
+
+    branch3x3 = Conv_2D_Block(inputs, filterB2_1, 1)
+    branch3x3 = Conv_2D_Block(branch3x3, filterB2_2, (1, 3))
+    branch3x3 = Conv_2D_Block(branch3x3, filterB2_3, (3, 1))
+
+    branch_concat = tf.keras.layers.concatenate([branch1x1, branch3x3], axis=-1)
+    branch1x1_ln = tf.keras.layers.Conv2D(filterB3_1, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
+
+    x = tf.keras.layers.Add(name='Inception_ResNet_Block_C'+str(i))([inputs, branch1x1_ln])
+    x = tf.keras.layers.BatchNormalization()(x)
+    out = tf.keras.layers.Activation('relu')(x)
+
+    return out
+
+
+def Reduction_Block_A(inputs, filterB1_1, filterB2_1, filterB2_2, filterB2_3):
+    # Reduction Block A
+    branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(inputs)
+
+    branch3x3 = Conv_2D_Block(inputs, filterB1_1, 3, strides=(2, 2), padding='valid')
+
+    branch3x3dbl = Conv_2D_Block(inputs, filterB2_1, 1)
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB2_2, 3)
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB2_3, 3, strides=(2, 2), padding='valid')
+
+    x = tf.keras.layers.concatenate([branch_pool, branch3x3, branch3x3dbl], axis=-1, name='Reduction_Block_A')
+    x = tf.keras.layers.BatchNormalization()(x)
+    out = tf.keras.layers.Activation('relu')(x)
+
+    return out
+
+
+def Reduction_Block_B(inputs, filterB1_1, filterB1_2, filterB2_1, filterB2_2, filterB3_1, filterB3_2, filterB3_3):
+    # Reduction Block B
+    branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(inputs)
+
+    branch3x3 = Conv_2D_Block(inputs, filterB1_1, 1)
+    branch3x3 = Conv_2D_Block(branch3x3, filterB1_2, 3, strides=(2, 2), padding='valid')
+
+    branch3x3_2 = Conv_2D_Block(inputs, filterB2_1, 1)
+    branch3x3_2 = Conv_2D_Block(branch3x3_2, filterB2_2, 3, strides=(2, 2), padding='valid')
+
+    branch3x3dbl = Conv_2D_Block(inputs, filterB3_1, 1)
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_2, 3)
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_3, 3, strides=(2, 2), padding='valid')
+
+    x = tf.keras.layers.concatenate([branch_pool, branch3x3, branch3x3_2, branch3x3dbl], axis=-1)
+    x = tf.keras.layers.BatchNormalization()(x)
+    out = tf.keras.layers.Activation('relu')(x)
+
+    return out
+
 
 class Inception_ResNet:
     def __init__(self, length, width, num_channel, num_filters, problem_type='Regression',
@@ -82,21 +178,7 @@ class Inception_ResNet:
 
         # 5x Inception ResNet A Blocks - 35 x 35 x 256
         for i in range(5):
-            branch1x1 = Conv_2D_Block(x, 32, 1)
-
-            branch3x3 = Conv_2D_Block(x, 32, 1)
-            branch3x3 = Conv_2D_Block(branch3x3, 32, 3)
-
-            branch3x3dbl = Conv_2D_Block(x, 32, 1)
-            branch3x3dbl = Conv_2D_Block(branch3x3dbl, 32, 3)
-            branch3x3dbl = Conv_2D_Block(branch3x3dbl, 32, 3)
-
-            branch_concat = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl], axis=-1)
-            branch1x1_ln = tf.keras.layers.Conv2D(256, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
-
-            x = tf.keras.layers.Add()([x, branch1x1_ln])
-            x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation('relu')(x)
+            x = Inception_ResNet_Module_A(x, 32, 32, 32, 32, 32, 32, 256, i)
 
         aux_output_0 = []
         if self.auxilliary_outputs:
@@ -106,33 +188,11 @@ class Inception_ResNet:
             aux_conv = Conv_2D_Block(aux_conv, 768, (5, 5), padding='valid')
             aux_output_0 = self.MLP(aux_conv)
 
-        # Reduction A: 17 x 17 x 768
-        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
-
-        branch3x3 = Conv_2D_Block(x, 384, 3, strides=(2, 2), padding='valid')
-
-        branch3x3dbl = Conv_2D_Block(x, 192, 1)
-        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 224, 3)
-        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 256, 3, strides=(2, 2), padding='valid')
-
-        x = tf.keras.layers.concatenate([branch_pool, branch3x3, branch3x3dbl], axis=-1)
-        x = tf.keras.layers.BatchNormalization()(x)
-        x = tf.keras.layers.Activation('relu')(x)
+        x = Reduction_Block_A(x, 384, 192, 224, 256)  # Reduction Block A: 17 x 17 x 768
 
         # 10x Inception ResNet B Blocks - 17 x 17 x 768
         for i in range(10):
-            branch1x1 = Conv_2D_Block(x, 128, 1)
-
-            branch7x7 = Conv_2D_Block(x, 128, 1)
-            branch7x7 = Conv_2D_Block(branch7x7, 128, (1, 7))
-            branch7x7 = Conv_2D_Block(branch7x7, 128, (7, 1))
-
-            branch_concat = tf.keras.layers.concatenate([branch1x1, branch7x7], axis=-1)
-            branch1x1_ln = tf.keras.layers.Conv2D(896, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
-
-            x = tf.keras.layers.Add()([x, branch1x1_ln])
-            x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation('relu')(x)
+            x = Inception_ResNet_Module_B(x, 128, 128, 128, 128, 896, i)
 
         aux_output_1 = []
         if self.auxilliary_outputs:
@@ -142,37 +202,11 @@ class Inception_ResNet:
             aux_conv = Conv_2D_Block(aux_conv, 768, (5, 5), padding='valid')
             aux_output_1 = self.MLP(aux_conv)
 
-        # Reduction B: 8 x 8 x 1280
-        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
-
-        branch3x3 = Conv_2D_Block(x, 256, 1)
-        branch3x3 = Conv_2D_Block(branch3x3, 384, 3, strides=(2, 2), padding='valid')
-
-        branch3x3_2 = Conv_2D_Block(x, 256, 1)
-        branch3x3_2 = Conv_2D_Block(branch3x3_2, 256, 3, strides=(2, 2), padding='valid')
-
-        branch3x3dbl = Conv_2D_Block(x, 256, 1)
-        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 256, 3)
-        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 256, 3, strides=(2, 2), padding='valid')
-
-        x = tf.keras.layers.concatenate([branch_pool, branch3x3, branch3x3_2, branch3x3dbl], axis=-1)
-        x = tf.keras.layers.BatchNormalization()(x)
-        x = tf.keras.layers.Activation('relu')(x)
+        x = Reduction_Block_B(x, 256, 384, 256, 256, 256, 256, 256)  # Reduction Block B: 8 x 8 x 1280
 
         # 5x Inception ResNet C Blocks - 8 x 8 x 1280
         for i in range(5):
-            branch1x1 = Conv_2D_Block(x, 128, 1)
-
-            branch3x3 = Conv_2D_Block(x, 192, 1)
-            branch3x3 = Conv_2D_Block(branch3x3, 192, (1, 3))
-            branch3x3 = Conv_2D_Block(branch3x3, 192, (3, 1))
-
-            branch_concat = tf.keras.layers.concatenate([branch1x1, branch3x3], axis=-1)
-            branch1x1_ln = tf.keras.layers.Conv2D(1792, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
-
-            x = tf.keras.layers.Add()([x, branch1x1_ln])
-            x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation('relu')(x)
+            x = Inception_ResNet_Module_C(x, 128, 192, 192, 192, 1792, i)
 
         # Final Dense MLP Layer for the outputs
         final_output = self.MLP(x)
@@ -207,21 +241,7 @@ class Inception_ResNet:
 
         # 5x Inception ResNet A Blocks - 35 x 35 x 256
         for i in range(10):
-            branch1x1 = Conv_2D_Block(x, 32, 1)
-
-            branch3x3 = Conv_2D_Block(x, 32, 1)
-            branch3x3 = Conv_2D_Block(branch3x3, 32, 3)
-
-            branch3x3dbl = Conv_2D_Block(x, 32, 1)
-            branch3x3dbl = Conv_2D_Block(branch3x3dbl, 48, 3)
-            branch3x3dbl = Conv_2D_Block(branch3x3dbl, 64, 3)
-
-            branch_concat = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl], axis=-1)
-            branch1x1_ln = tf.keras.layers.Conv2D(384, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
-
-            x = tf.keras.layers.Add()([x, branch1x1_ln])
-            x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation('relu')(x)
+            x = Inception_ResNet_Module_A(x, 32, 32, 32, 32, 48, 64, 384, i)
 
         aux_output_0 = []
         if self.auxilliary_outputs:
@@ -230,33 +250,11 @@ class Inception_ResNet:
             aux_conv = Conv_2D_Block(aux_pool, 96, 1)
             aux_output_0 = self.MLP(aux_conv)
 
-        # Reduction A: 17 x 17 x 768
-        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
-
-        branch3x3 = Conv_2D_Block(x, 384, 3, strides=(2, 2), padding='valid')
-
-        branch3x3dbl = Conv_2D_Block(x, 192, 1)
-        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 224, 3)
-        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 256, 3, strides=(2, 2), padding='valid')
-
-        x = tf.keras.layers.concatenate([branch_pool, branch3x3, branch3x3dbl], axis=-1)
-        x = tf.keras.layers.BatchNormalization()(x)
-        x = tf.keras.layers.Activation('relu')(x)
+        x = Reduction_Block_A(x, 384, 192, 224, 256)  # Reduction Block A: 17 x 17 x 768
 
         # 10x Inception ResNet B Blocks - 17 x 17 x 768
         for i in range(20):
-            branch1x1 = Conv_2D_Block(x, 192, 1)
-
-            branch7x7 = Conv_2D_Block(x, 128, 1)
-            branch7x7 = Conv_2D_Block(branch7x7, 160, (1, 7))
-            branch7x7 = Conv_2D_Block(branch7x7, 192, (7, 1))
-
-            branch_concat = tf.keras.layers.concatenate([branch1x1, branch7x7], axis=-1)
-            branch1x1_ln = tf.keras.layers.Conv2D(1152, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
-
-            x = tf.keras.layers.Add()([x, branch1x1_ln])
-            x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation('relu')(x)
+            x = Inception_ResNet_Module_B(x, 192, 128, 160, 192, 1152, i)
 
         aux_output_1 = []
         if self.auxilliary_outputs:
@@ -266,37 +264,11 @@ class Inception_ResNet:
             aux_conv = Conv_2D_Block(aux_conv, 768, 5)
             aux_output_1 = self.MLP(aux_conv)
 
-        # Reduction B: 8 x 8 x 1280
-        branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(x)
-
-        branch3x3 = Conv_2D_Block(x, 256, 1)
-        branch3x3 = Conv_2D_Block(branch3x3, 384, 3, strides=(2, 2), padding='valid')
-
-        branch3x3_2 = Conv_2D_Block(x, 256, 1)
-        branch3x3_2 = Conv_2D_Block(branch3x3_2, 288, 3, strides=(2, 2), padding='valid')
-
-        branch3x3dbl = Conv_2D_Block(x, 256, 1)
-        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 288, 3)
-        branch3x3dbl = Conv_2D_Block(branch3x3dbl, 320, 3, strides=(2, 2), padding='valid')
-
-        x = tf.keras.layers.concatenate([branch_pool, branch3x3, branch3x3_2, branch3x3dbl], axis=-1)
-        x = tf.keras.layers.BatchNormalization()(x)
-        x = tf.keras.layers.Activation('relu')(x)
+        x = Reduction_Block_B(x, 256, 384, 256, 288, 256, 288, 320)  # Reduction Block B: 8 x 8 x 1280
 
         # 5x Inception ResNet C Blocks - 8 x 8 x 1280
         for i in range(10):
-            branch1x1 = Conv_2D_Block(x, 192, 1)
-
-            branch3x3 = Conv_2D_Block(x, 192, 1)
-            branch3x3 = Conv_2D_Block(branch3x3, 224, (1, 3))
-            branch3x3 = Conv_2D_Block(branch3x3, 256, (3, 1))
-
-            branch_concat = tf.keras.layers.concatenate([branch1x1, branch3x3], axis=-1)
-            branch1x1_ln = tf.keras.layers.Conv2D(2144, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
-
-            x = tf.keras.layers.Add()([x, branch1x1_ln])
-            x = tf.keras.layers.BatchNormalization()(x)
-            x = tf.keras.layers.Activation('relu')(x)
+            x = Inception_ResNet_Module_C(x, 192, 192, 224, 256, 2144, i)
 
         # Final Dense MLP Layer for the outputs
         final_output = self.MLP(x)
