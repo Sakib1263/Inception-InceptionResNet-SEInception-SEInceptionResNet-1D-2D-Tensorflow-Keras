@@ -34,17 +34,17 @@ def regressor(inputs, feature_number):
 
 def Inception_ResNet_Module_A(inputs, filterB1_1, filterB2_1, filterB2_2, filterB3_1, filterB3_2, filterB3_3, filterB4_1, i):
     # Inception ResNet Module A - Block i
-    branch1x1 = Conv_2D_Block(inputs, filterB1_1, 1)
+    branch1x1 = Conv_2D_Block(inputs, filterB1_1, (1, 1))
 
-    branch3x3 = Conv_2D_Block(inputs, filterB2_1, 1)
-    branch3x3 = Conv_2D_Block(branch3x3, filterB2_2, 3)
+    branch3x3 = Conv_2D_Block(inputs, filterB2_1, (1, 1))
+    branch3x3 = Conv_2D_Block(branch3x3, filterB2_2, (3, 3))
 
-    branch3x3dbl = Conv_2D_Block(inputs, filterB3_1, 1)
-    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_2, 3)
-    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_3, 3)
+    branch3x3dbl = Conv_2D_Block(inputs, filterB3_1, (1, 1))
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_2, (3, 3))
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_3, (3, 3))
 
     branch_concat = tf.keras.layers.concatenate([branch1x1, branch3x3, branch3x3dbl], axis=-1)
-    branch1x1_ln = tf.keras.layers.Conv2D(filterB4_1, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
+    branch1x1_ln = tf.keras.layers.Conv2D(filterB4_1, (1, 1), activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
 
     x = tf.keras.layers.Add(name='Inception_ResNet_Block_A'+str(i))([inputs, branch1x1_ln])
     x = tf.keras.layers.BatchNormalization()(x)
@@ -55,14 +55,14 @@ def Inception_ResNet_Module_A(inputs, filterB1_1, filterB2_1, filterB2_2, filter
 
 def Inception_ResNet_Module_B(inputs, filterB1_1, filterB2_1, filterB2_2, filterB2_3, filterB3_1, i):
     # Inception ResNet Module B - Block i
-    branch1x1 = Conv_2D_Block(inputs, filterB1_1, 1)
+    branch1x1 = Conv_2D_Block(inputs, filterB1_1, (1, 1))
 
-    branch7x7 = Conv_2D_Block(inputs, filterB2_1, 1)
+    branch7x7 = Conv_2D_Block(inputs, filterB2_1, (1, 1))
     branch7x7 = Conv_2D_Block(branch7x7, filterB2_2, (1, 7))
     branch7x7 = Conv_2D_Block(branch7x7, filterB2_3, (7, 1))
 
     branch_concat = tf.keras.layers.concatenate([branch1x1, branch7x7], axis=-1)
-    branch1x1_ln = tf.keras.layers.Conv2D(filterB3_1, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
+    branch1x1_ln = tf.keras.layers.Conv2D(filterB3_1, (1, 1), activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
 
     x = tf.keras.layers.Add(name='Inception_ResNet_Block_B'+str(i))([inputs, branch1x1_ln])
     x = tf.keras.layers.BatchNormalization()(x)
@@ -73,14 +73,14 @@ def Inception_ResNet_Module_B(inputs, filterB1_1, filterB2_1, filterB2_2, filter
 
 def Inception_ResNet_Module_C(inputs, filterB1_1, filterB2_1, filterB2_2, filterB2_3, filterB3_1, i):
     # Inception ResNet Module C - Block i
-    branch1x1 = Conv_2D_Block(inputs, filterB1_1, 1)
+    branch1x1 = Conv_2D_Block(inputs, filterB1_1, (1, 1))
 
-    branch3x3 = Conv_2D_Block(inputs, filterB2_1, 1)
+    branch3x3 = Conv_2D_Block(inputs, filterB2_1, (1, 1))
     branch3x3 = Conv_2D_Block(branch3x3, filterB2_2, (1, 3))
     branch3x3 = Conv_2D_Block(branch3x3, filterB2_3, (3, 1))
 
     branch_concat = tf.keras.layers.concatenate([branch1x1, branch3x3], axis=-1)
-    branch1x1_ln = tf.keras.layers.Conv2D(filterB3_1, 1, activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
+    branch1x1_ln = tf.keras.layers.Conv2D(filterB3_1, (1, 1), activation='linear', strides=(1, 1), padding='same', kernel_initializer="he_normal")(branch_concat)
 
     x = tf.keras.layers.Add(name='Inception_ResNet_Block_C'+str(i))([inputs, branch1x1_ln])
     x = tf.keras.layers.BatchNormalization()(x)
@@ -95,9 +95,9 @@ def Reduction_Block_A(inputs, filterB1_1, filterB2_1, filterB2_2, filterB2_3):
 
     branch3x3 = Conv_2D_Block(inputs, filterB1_1, 3, strides=(2, 2), padding='valid')
 
-    branch3x3dbl = Conv_2D_Block(inputs, filterB2_1, 1)
-    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB2_2, 3)
-    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB2_3, 3, strides=(2, 2), padding='valid')
+    branch3x3dbl = Conv_2D_Block(inputs, filterB2_1, (1, 1))
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB2_2, (3, 3))
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB2_3, (3, 3), strides=(2, 2), padding='valid')
 
     x = tf.keras.layers.concatenate([branch_pool, branch3x3, branch3x3dbl], axis=-1, name='Reduction_Block_A')
     x = tf.keras.layers.BatchNormalization()(x)
@@ -110,15 +110,15 @@ def Reduction_Block_B(inputs, filterB1_1, filterB1_2, filterB2_1, filterB2_2, fi
     # Reduction Block B
     branch_pool = tf.keras.layers.MaxPooling2D(pool_size=(3, 3), strides=(2, 2))(inputs)
 
-    branch3x3 = Conv_2D_Block(inputs, filterB1_1, 1)
-    branch3x3 = Conv_2D_Block(branch3x3, filterB1_2, 3, strides=(2, 2), padding='valid')
+    branch3x3 = Conv_2D_Block(inputs, filterB1_1, (1, 1))
+    branch3x3 = Conv_2D_Block(branch3x3, filterB1_2, (3, 3), strides=(2, 2), padding='valid')
 
-    branch3x3_2 = Conv_2D_Block(inputs, filterB2_1, 1)
-    branch3x3_2 = Conv_2D_Block(branch3x3_2, filterB2_2, 3, strides=(2, 2), padding='valid')
+    branch3x3_2 = Conv_2D_Block(inputs, filterB2_1, (1, 1))
+    branch3x3_2 = Conv_2D_Block(branch3x3_2, filterB2_2, (3, 3), strides=(2, 2), padding='valid')
 
-    branch3x3dbl = Conv_2D_Block(inputs, filterB3_1, 1)
-    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_2, 3)
-    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_3, 3, strides=(2, 2), padding='valid')
+    branch3x3dbl = Conv_2D_Block(inputs, filterB3_1, (1, 1))
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_2, (3, 3))
+    branch3x3dbl = Conv_2D_Block(branch3x3dbl, filterB3_3, (3, 3), strides=(2, 2), padding='valid')
 
     x = tf.keras.layers.concatenate([branch_pool, branch3x3, branch3x3_2, branch3x3dbl], axis=-1)
     x = tf.keras.layers.BatchNormalization()(x)
