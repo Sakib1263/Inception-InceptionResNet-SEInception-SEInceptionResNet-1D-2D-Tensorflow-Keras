@@ -17,7 +17,7 @@ The Inception_v1 block has two auxillary outputs apart from the final output whi
 ![Inception_v1 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_v1.png "Inception_v1 Architecture") GoogLeNet Network (From Left to Right) [1]  
 
 ## Inception-v2, v3
-Inception_v3 is a more efficient version of Inception_v2 while Inception_v2 first implemented the new Inception Blocks (A, B and C). BatchNormalization (BN) [4] was first implemented in Inception_v2. In Inception_v3, even the auxilliary outputs contain BN and similar blocks as the fina output. Inception_v2 architecture is similar to v3 but during the input, a traditional convolutional layer has been replaced by a DepthWise Separable Convolutional layer. The input kernel size of both Incpetion v1 and v2 was 7, but was changed to 3 in later versions.  
+Inception_v3 is a more efficient version of Inception_v2 while Inception_v2 first implemented the new Inception Blocks (A, B and C). BatchNormalization (BN) [4] was first implemented in Inception_v2. In Inception_v3, even the auxilliary outputs contain BN and similar blocks as the final output. Inception_v2 architecture is similar to v3 but during the input, a traditional convolutional layer has been replaced by a DepthWise Separable Convolutional layer. The input kernel size of both Incpetion v1 and v2 was 7, but was changed to 3 in later versions.  
 Inception_v3 architecture is as follows:  
 ![Inception_v3 Architecture Params](https://github.com/Sakib1263/Inception-Model-Builder-Tensorflow-Keras/blob/main/Documents/Images/Inception_v3.png "Inception_v3 Architecture") 
 Inception-v3 Architecture (Batch Norm and ReLU are used after Conv) [5]  
@@ -41,10 +41,10 @@ The Stem of the Inception_ResNet_v2 is exactly same as that of Inception_v4, so 
 
 ## Supported Features
 Keping the future in mind, all the models have been developed in Keras with Tensorflow backend (tf.keras), so they do not support Theano as the backend. But, the speciality about the models is their flexibility. The user has the option for: 
-1. Choosing any of 4 available Inception models for either 1D or 2D tasks.
-2. Varying number of input kernel/filter, commonly known as the Width of the model. Default is 32, which is better to use following the paper.
-3. Varying number of classes for Classification tasks and number of extracted features for Regression tasks.
-4. Varying number of Channels in the Input Dataset.
+1. Choosing any of 4 available Inception models or 2 Inception-ResNet models for either 1D or 2D tasks.
+2. Varying number of input kernel/filter, commonly known as the 'Width' of the model. Default is 32, which is better to use following the paper.
+3. Varying number of classes for Classification tasks and number of features to be extracted for Regression tasks.
+4. Varying number of Channels (e.g., 2 channels means 2 sources/datasets will be trained jointly for a common target).
 5. Auxilliary Outputs: Two optional Auxilliary Outputs are available for each Inception Model, each one is set before the Grid Size Reduction Blocks, respectively. If set 'TRUE', the output will contain 3 columns as predictions. Mentionable that this concept of having two auxilliary outputs, which act similar to 'Deep Supervision' for segmentation models such as UNet, has been adopted from Inception_v1 (GoogLeNet) architecture as shown above.  
 
 Details of the 1D implementation process are available in the Jupyter Notebook containing the DEMO provided in the codes section. The datasets used in the DEMO are also available in the 'Documents' folder. The DEMO for 2D version will be added later along with supports for ImageNet or CIFAR-10 weights to be added in the top as an option.  
