@@ -8,8 +8,6 @@ Inception Models supported:
 6. **Inception_ResNet_v2** [3]
 7. **Squeeze and Excite (SE)** version of all models  
 
-Squeeze and Excite (SE) version of all the models are also available.  
-
 ## Inception-v1 (GoogLeNet)  
 The original Inception_v1 or GoogLeNet architecture had inception blocks of various kernel sizes in parallel branches concatenated together as shown below. The modified inception module is more efficient than the original one in terms of size and performance, as claimed by [1]. 
 
