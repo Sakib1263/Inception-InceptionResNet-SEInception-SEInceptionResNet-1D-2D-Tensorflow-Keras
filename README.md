@@ -5,7 +5,8 @@ Inception Models supported:
 3. **Inception_v3** [2]  
 4. **Inception_v4** [3]  
 5. **Inception_ResNet_v1** [3]  
-6. **Inception_ResNet_v2** [3]  
+6. **Inception_ResNet_v2** [3]
+7. **Squeeze and Excite (SE)** version of all models  
 
 Squeeze and Excite (SE) version of all the models are also available.  
 
